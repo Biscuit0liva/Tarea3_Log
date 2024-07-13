@@ -1,3 +1,4 @@
 public interface HashFunction {
-    public int hash(String input);   
+    public int hash(String input);
+
 }

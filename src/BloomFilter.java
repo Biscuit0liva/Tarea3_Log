@@ -7,50 +7,57 @@ import java.util.List;
  * In exchange with the possibility of false positives, have a space advantage over commonly hash tables, being better when the number of elements is large.
  * 
  * @var BitSet bitSet: the bitset that tells you whether an element is present or not.
- * @var int size: the size of the bloom filter.
+ * @var int m: the m of the bloom filter.
  * @var List<HashFunction> hashFunctions: a list of hash functions that are used to hash the input.
  */
 public class BloomFilter {
 
-    private BitSet bitSet;
-    private int size;
-    private List<HashFunction> hashFunctions;
+    private BitSet bitSet; // the bitset that tells you whether an element is present or not.
+    private int m; // size of the M array.
+    private List<HashFunction> hashFunctions; // there are k hashing funcs.
 
-    /* 
+    /*
      * Constructor
-     * @param size: the size of the bloom filter
+     * 
+     * @param m: the size of the bitset of the bloom filter
+     * 
      * @param hashFunctions: a list of hash functions
-     * @return: 
+     * 
+     * @return:
      */
-    public BloomFilter(int size, List<HashFunction> hashFunctions){
-        this.size = size;
-        this.bitSet = new BitSet(size);
-        this.hashFunctions = hashFunctions;
+    public BloomFilter(int m, List<HashFunction> hashFunctions) {
+        this.m = m; // set the size of the bitset
+        this.bitSet = new BitSet(m); // initialize the bitset with m bits
+        this.hashFunctions = hashFunctions; // initialize the hash functions
     }
 
-    /* 
+    /*
      * Add
      * Add an element to the bloom filter
+     * 
      * @param element: the element to be added
-     * @return: 
+     * 
+     * @return:
      */
-    public void add(String element){
-        for(HashFunction hashFunctions : hashFunctions){
+    public void add(String element) {
+        for (HashFunction hashFunctions : hashFunctions) {
             int hash = hashFunctions.hash(element);
             bitSet.set(hash);
         }
     }
 
     /*
-     * Contain 
+     * Contain
      * Check if the element is in the bloom filter
+     * 
      * @param element: the element to be checked
+     * 
      * @return: true if the element is in the bloom filter, false otherwise
      */
-    public boolean contain(String element){
-        for(HashFunction hashFunction : hashFunctions){
+    public boolean contains(String element) {
+        for (HashFunction hashFunction : hashFunctions) {
             int hash = hashFunction.hash(element);
-            if(!bitSet.get(hash)){
+            if (!bitSet.get(hash)) {
                 return false;
             }
         }
