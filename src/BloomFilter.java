@@ -40,8 +40,11 @@ public class BloomFilter {
      * @return:
      */
     public void add(String element) {
-        for (HashFunction hashFunctions : hashFunctions) {
-            int hash = hashFunctions.hash(element);
+        for (HashFunction hashFunction : hashFunctions) {
+            int hash = hashFunction.hash(element);
+            if (hash < 0) {
+                throw new IllegalArgumentException("Hash value cannot be negative" + hash);
+            }
             bitSet.set(hash);
         }
     }

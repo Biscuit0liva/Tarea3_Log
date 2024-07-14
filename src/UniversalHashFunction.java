@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class UniversalHashFunction implements HashFunction {
     private final int a, b, p, m;
@@ -15,7 +12,7 @@ public class UniversalHashFunction implements HashFunction {
     @Override
     public int hash(String input) {
 
-        return ((a * input.hashCode() + b) % p) % m;
+        return (Math.abs(a * input.hashCode() + b) % p) % m;
     }
 
 }

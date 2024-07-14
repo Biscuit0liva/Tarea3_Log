@@ -65,40 +65,45 @@ public class test {
     }
 
     public static void main(String[] args) {
-
+        System.err.println("Reading CSV file");
         List<String> column = readCSV("src/Popular-Baby-Names-Final.csv", 0);
 
         // now , we create the bloom filter
         // N will be the size of the universe that we are going to hash. Not necessarily
         // the number of elements in the set.
-        double fraction = 0.5 ; // fraction of the universe that we want to use
+        double fraction = 0.7 ; // fraction of the universe that we want to use
         int N = (int) (column.size() * fraction); // size of the universe
         double desired_fp = 0.01; // desired false positive rate
         int m = (int) (-N * Math.log(desired_fp) / Math.pow(Math.log(2), 2)); // size of the bit array
+
         //then, we create the k-hash functions.
         int k = (int)(m/N * Math.log(2)); // number of hash functions
         int p = findNextPrime(N); // prime number greater than N
         List<HashFunction> hashFunctions = createHashFunctions(k,p,m);
         BloomFilter bloomFilter = new BloomFilter(m,hashFunctions);
-  
+        System.err.println("Bloom filter created with parameters: m = " + m + ", k = " + k + ", p = " + p  + ", N = " + N + "/" + column.size());
         List<String> auxList = new ArrayList<>(); // auxiliary list to store added elements
         Random random = new Random();
-        for (int i = 0; i < N; i++) {
+        int i = 0;
+
+        while ( i< N ) {
             int randomIndex = random.nextInt(column.size());
             String element = column.get(randomIndex);
             if (!auxList.contains(element)) {
                 bloomFilter.add(element);
                 auxList.add(element);
+                i++;
             }
         }
-
+        System.err.println("Bloom filter filled with " + N + " elements");
+        System.out.println("Searching elements...");
         // now we test the bloom filter
         int falsePositives = 0;
         int trueNegatives = 0;
         int truePositives = 0;
         int falseNegatives = 0;
-        for (int i = 0; i < column.size(); i++) {
-            String element = column.get(i);
+        for (int index = 0; index < column.size(); index++) {
+            String element = column.get(index);
             if (auxList.contains(element)) {
                 if (!bloomFilter.contains(element)) {
                     falseNegatives++;
@@ -118,13 +123,6 @@ public class test {
         System.out.println("True negatives: " + trueNegatives);
         System.out.println("True positives: " + truePositives);
         System.out.println("False negatives: " + falseNegatives);
-
-        
-
-
-
-
-
 
     }
 
