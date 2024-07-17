@@ -1,32 +1,16 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import utilities.utilities;
+import static utilities.utilities.grepSearch;
+import static utilities.utilities.readCSV;
+
+
 
 public class test {
-    /**
-     * Reads the column on the specified CSV file according to the column number
-     */
-    public static List<String> readCSV(String filePath, int column_number) {
-        List<String> column = new ArrayList<String>();
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ",";
-        try {
-            br = new BufferedReader(new FileReader(filePath));
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(cvsSplitBy);
-                column.add(data[column_number]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-        return column;
-    }
+    
+    
 
     public static List<HashFunction> createHashFunctions(int k, int p, int m) {
         Random random = new Random();
@@ -66,13 +50,58 @@ public class test {
 
     public static void main(String[] args) {
         System.err.println("Reading CSV file");
-        List<String> column = readCSV("src/Popular-Baby-Names-Final.csv", 0);
+        List<String> DATA = readCSV("src/Popular-Baby-Names-Final.csv",";" );
 
-        // now , we create the bloom filter
-        // N will be the size of the universe that we are going to hash. Not necessarily
-        // the number of elements in the set.
+        String babiesCSV = "src/Popular-Baby-Names-Final.csv";
+        String moviesCSV = "src/Film-Names.csv";
+        
+        List<Integer> Ns = Arrays.asList(
+            (int) Math.pow(2, 10),
+            (int) Math.pow(2, 12),
+            (int) Math.pow(2, 14),
+            (int) Math.pow(2, 16)
+        );
+
+        List<Double> Ps = Arrays.asList(0.0,0.25,0.5,0.75,1.0);
+
+        for (int N : Ns) {
+            for (double P : Ps) {
+                int foundCount = 0;
+                int totalCount = 0;
+                System.err.println("N = " + N + ", P = " + P);
+                List<String> partitionedData = utilities.partitionCSV(babiesCSV, moviesCSV, P, N);
+                if (partitionedData.size() != N) {
+                    System.err.println("Error: partitioned data size is not N");
+                    return;
+                }
+                for (String element : partitionedData) {
+                    System.err.print("\rProgress: " + totalCount + "/" + N);
+                    
+
+
+                    Boolean found = grepSearch(element, "src/Popular-Baby-Names-Final.csv");
+
+                    if (found ){
+                        foundCount++;
+                    }
+                    totalCount++;
+                }
+                System.err.println("\n");
+                System.err.println("Elements found: " + foundCount+ "/" + N);
+                
+                
+            }
+            
+        }
+
+
+
+    }
+
+    public static void simpleTest (List<String> DATA) {
+
         double fraction = 0.7 ; // fraction of the universe that we want to use
-        int N = (int) (column.size() * fraction); // size of the universe
+        int N = (int) (DATA.size() * fraction); // size of the universe
         double desired_fp = 0.01; // desired false positive rate
         int m = (int) (-N * Math.log(desired_fp) / Math.pow(Math.log(2), 2)); // size of the bit array
 
@@ -81,14 +110,14 @@ public class test {
         int p = findNextPrime(N); // prime number greater than N
         List<HashFunction> hashFunctions = createHashFunctions(k,p,m);
         BloomFilter bloomFilter = new BloomFilter(m,hashFunctions);
-        System.err.println("Bloom filter created with parameters: m = " + m + ", k = " + k + ", p = " + p  + ", N = " + N + "/" + column.size());
+        System.err.println("Bloom filter created with parameters: m = " + m + ", k = " + k + ", p = " + p  + ", N = " + N + "/" + DATA.size());
         List<String> auxList = new ArrayList<>(); // auxiliary list to store added elements
         Random random = new Random();
         int i = 0;
 
         while ( i< N ) {
-            int randomIndex = random.nextInt(column.size());
-            String element = column.get(randomIndex);
+            int randomIndex = random.nextInt(DATA.size());
+            String element = DATA.get(randomIndex);
             if (!auxList.contains(element)) {
                 bloomFilter.add(element);
                 auxList.add(element);
@@ -102,8 +131,8 @@ public class test {
         int trueNegatives = 0;
         int truePositives = 0;
         int falseNegatives = 0;
-        for (int index = 0; index < column.size(); index++) {
-            String element = column.get(index);
+        for (int index = 0; index < DATA.size(); index++) {
+            String element = DATA.get(index);
             if (auxList.contains(element)) {
                 if (!bloomFilter.contains(element)) {
                     falseNegatives++;
@@ -123,7 +152,23 @@ public class test {
         System.out.println("True negatives: " + trueNegatives);
         System.out.println("True positives: " + truePositives);
         System.out.println("False negatives: " + falseNegatives);
-
+        
     }
+    //Function to search for an element in the csv. It can be setted to use the bloom filter or not.
 
+    public static boolean searchTest(String input,Boolean useBloomFilter, List<String> DATA){
+        if (useBloomFilter){
+
+            
+        } else {
+            if (grepSearch(input, "src/Popular-Baby-Names-Final.csv")){
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        }
+        return false;
+    }
 }
