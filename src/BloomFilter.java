@@ -66,4 +66,15 @@ public class BloomFilter {
         }
         return true;
     }
+
+
+    // Método para obtener la representación de cadena del BitSet
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bitSet.size(); i++) {
+            sb.append(bitSet.get(i) ? "1" : "0");
+        }
+        return sb.toString();
+    }
 }

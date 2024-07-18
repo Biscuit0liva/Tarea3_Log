@@ -26,7 +26,7 @@ public class utilities {
             
             while ((line = br.readLine()) != null) {
                 if (input.equalsIgnoreCase(line.trim())) {
-                    System.out.println("Element found");
+                    
                     br.close();
                     return true;
                 }
@@ -35,7 +35,7 @@ public class utilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Element not found");
+        
         return false;
     }
 

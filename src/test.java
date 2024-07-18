@@ -71,7 +71,7 @@ public class test {
                 int totalCount = 0;
                 System.err.println("N = " + N + ", P = " + P);
                 List<String> partitionedData = utilities.partitionCSV(babiesCSV, moviesCSV, P, N);  // lista de elementos que se buscaran
-
+                
                 // Inicializar el filtro
                 double desired_fp = 0.01; // desired false positive rate
                 int n = babieStrings.size();            // numero de elementos que se agregaran al filtro
@@ -79,6 +79,9 @@ public class test {
                 int k = (int) (m/n * Math.log(2)); // number of hash functions
                 int p = findNextPrime(N); // prime number greater than N
                 List<HashFunction> hashFunctions = createHashFunctions(k, p, m);
+                for (HashFunction hashFunction : hashFunctions) {
+                    System.err.println("h(x):  " + hashFunction);
+                }
                 BloomFilter bloomFilter = new BloomFilter(m, hashFunctions);
                 // se agregan los elementos al filtro
                 for (String element : babieStrings){
@@ -90,6 +93,7 @@ public class test {
                     return;
                 }
                 // Se realiza la busqueda sin filtro
+                System.out.println("Searching elements using GREP");
                 long startTime = System.nanoTime();
                 for (String element : partitionedData) {
                     System.err.print("\rProgress: " + totalCount + "/" + N);
@@ -103,18 +107,20 @@ public class test {
                 }
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
+
+                System.err.println("// Elements found using GREP: " + foundCount+ "/" + N +" with time:" + duration/1000000 + "ms");
                 System.err.println("\n");
-                System.err.println("Elements found: " + foundCount+ "/" + N +" with time:" + duration/1000000 + "ms");
 
                 // Usar el filtro para buscar los elementos
                 foundCount = 0;
                 totalCount = 0;
                 int falsePositives = 0;
                 long startTimeBloom = System.nanoTime();
+                System.out.println("Searching elements using BLOOM FILTER");
                 for(String element : partitionedData){
                     System.err.print("\rProgress: " + totalCount + "/" + N);
 
-                    Boolean foundBloom = searchTest(element,true , partitionedData, bloomFilter);
+                    Boolean foundBloom = bloomFilter.contains(element);
                     if (foundBloom){    // si esta en el filtro realiza la busqueda grep
                         if(grepSearch(element, "src/Popular-Baby-Names-Final.csv")){
                             foundCount++;
@@ -126,79 +132,13 @@ public class test {
                 }
                 long endTimeBloom = System.nanoTime();
                 long durationBloom = (endTimeBloom - startTimeBloom);
-                System.err.println("Elements found using Bloom filter: " + foundCount + "/" + N+ " with time:" + durationBloom/1000000 + "ms"+ "And parameters P = " + P + ", m = " + m + ", k = " + k);
-            }
-            
-        }
+                System.err.println("//Elements found using BLOOM FILTER: " + foundCount + "/" + N+ " with time:" + durationBloom/1000000 + "ms"+ "And parameters P = " + P + ", m = " + m + ", k = " + k);
+                System.err.println("False positives: " + falsePositives);
 
-
-
-    }
-
-    public static void simpleTest (List<String> DATA) {
-
-        double fraction = 0.7 ; // fraction of the universe that we want to use
-        int N = (int) (DATA.size() * fraction); // size of the universe
-        double desired_fp = 0.01; // desired false positive rate
-        int m = (int) (-N * Math.log(desired_fp) / Math.pow(Math.log(2), 2)); // size of the bit array
-
-        //then, we create the k-hash functions.
-        int k = (int)(m/N * Math.log(2)); // number of hash functions
-        int p = findNextPrime(N); // prime number greater than N
-        List<HashFunction> hashFunctions = createHashFunctions(k,p,m);
-        BloomFilter bloomFilter = new BloomFilter(m,hashFunctions);
-        System.err.println("Bloom filter created with parameters: m = " + m + ", k = " + k + ", p = " + p  + ", N = " + N + "/" + DATA.size());
-        List<String> auxList = new ArrayList<>(); // auxiliary list to store added elements
-        Random random = new Random();
-        int i = 0;
-
-        while ( i< N ) {
-            int randomIndex = random.nextInt(DATA.size());
-            String element = DATA.get(randomIndex);
-            if (!auxList.contains(element)) {
-                bloomFilter.add(element);
-                auxList.add(element);
-                i++;
-            }
-        }
-        System.err.println("Bloom filter filled with " + N + " elements");
-        System.out.println("Searching elements...");
-        // now we test the bloom filter
-        int falsePositives = 0;
-        int trueNegatives = 0;
-        int truePositives = 0;
-        int falseNegatives = 0;
-        for (int index = 0; index < DATA.size(); index++) {
-            String element = DATA.get(index);
-            if (auxList.contains(element)) {
-                if (!bloomFilter.contains(element)) {
-                    falseNegatives++;
-                } else {
-                    truePositives++;
-                }
-            } else {
-                if (bloomFilter.contains(element)) {
-                    falsePositives++;
-                } else {
-                    trueNegatives++;
-                }
-            }
-        }
-        
-        System.out.println("False positives: " + falsePositives);
-        System.out.println("True negatives: " + trueNegatives);
-        System.out.println("True positives: " + truePositives);
-        System.out.println("False negatives: " + falseNegatives);
-        
-    }
-    //Function to search for an element in the csv. It can be setted to use the bloom filter or not.
-
-    public static boolean searchTest(String input,Boolean useBloomFilter, List<String> DATA, BloomFilter bloomFilter){
-        if (useBloomFilter){
-            return bloomFilter.contains(input);
-            
-        } else {
-            return grepSearch(input, "src/Popular-Baby-Names-Final.csv");
+                System.out.println("====================================================================================================");
+            }   
         }
     }
+
+   
 }

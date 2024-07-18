@@ -15,4 +15,10 @@ public class UniversalHashFunction implements HashFunction {
         return (Math.abs(a * input.hashCode() + b) % p) % m;
     }
 
+
+    @Override 
+    public String toString() {
+        return "a: " + a + ", b: " + b + ", p: " + p + ", m: " + m;
+    }
+
 }
