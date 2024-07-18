@@ -55,7 +55,7 @@ public class utilities {
         // Calcular la cantidad de elementos para cada partición
         int partitionSize1 = (int) Math.round(N * partitionNumber);
         int partitionSize2 = N - partitionSize1;
-        System.out.println("Partition size 1: " + partitionSize1 + ", Partition size 2: " + partitionSize2);
+        
 
         // Seleccionar elementos aleatoriamente de la primera lista
         Collections.shuffle(elements1, new Random());
