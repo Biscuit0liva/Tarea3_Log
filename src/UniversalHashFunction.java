@@ -1,5 +1,5 @@
 
-public class UniversalHashFunction implements HashFunction {
+public class UniversalHashFunction implements HashFunction1 {
     private final int a, b, p, m;
 
     public UniversalHashFunction(int m, int p, int a, int b) {

@@ -55,6 +55,7 @@ public class utilities {
         // Calcular la cantidad de elementos para cada partición
         int partitionSize1 = (int) Math.round(N * partitionNumber);
         int partitionSize2 = N - partitionSize1;
+        System.out.println("Partition size 1: " + partitionSize1 + ", Partition size 2: " + partitionSize2);
 
         // Seleccionar elementos aleatoriamente de la primera lista
         Collections.shuffle(elements1, new Random());
@@ -67,17 +68,22 @@ public class utilities {
 
         // Seleccionar elementos aleatoriamente de la segunda lista
         Collections.shuffle(elements2, new Random());
+        int i = 0;
         int addedCount = 0;
-        for (int i = 0; i < elements2.size() && addedCount < partitionSize2; i++) {
-            if (!elements1Set.contains(elements2.get(i))) {
-                result.add(elements2.get(i));
-                addedCount++;
+        while (addedCount < partitionSize2 ) {
+
+            String element = elements2.get(i);
+            result.add(element);
+            addedCount++;
+            if (i == elements2.size()-1 ) {
+                i=0;
+            }else {
+                i++;
             }
         }
 
         return result;
     }
-
     /**
      * Reads the DATA on the specified CSV file according to the DATA number
      */

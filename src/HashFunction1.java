@@ -1,4 +1,4 @@
-public interface HashFunction {
+public interface HashFunction1 {
     public int hash(String input);
 
 

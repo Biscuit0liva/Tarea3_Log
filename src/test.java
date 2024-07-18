@@ -12,9 +12,9 @@ public class test {
     
     
 
-    public static List<HashFunction> createHashFunctions(int k, int p, int m) {
+    public static List<HashFunction1> createHashFunctions(int k, int p, int m) {
         Random random = new Random();
-        List<HashFunction> hashFunctions = new ArrayList<>();
+        List<HashFunction1> hashFunctions = new ArrayList<>();
         for (int i = 0; i < k; i++) {
             int a = random.nextInt(p - 1) + 1;
             int b = random.nextInt(p);
@@ -62,8 +62,9 @@ public class test {
             (int) Math.pow(2, 16)
         );
 
-        List<Double> Ps = Arrays.asList(0.0,0.25,0.5,0.75,1.0);
+        List<Double> Ps = Arrays.asList(0.0, 0.25, 0.5, 0.75, 1.0);
         List<String> babieStrings = utilities.readCSV(babiesCSV, ",");
+        int n = babieStrings.size();            // numero de elementos que se agregaran al filtro
 
         for (int N : Ns) {
             for (double P : Ps) {
@@ -74,12 +75,22 @@ public class test {
                 
                 // Inicializar el filtro
                 double desired_fp = 0.01; // desired false positive rate
-                int n = babieStrings.size();            // numero de elementos que se agregaran al filtro
-                int m = (int) Math.ceil((n * Math.log(desired_fp)) / Math.log(1 / Math.pow(2, Math.log(2)))); // size of the bit array
-                int k = (int) (m/n * Math.log(2)); // number of hash functions
-                int p = findNextPrime(N); // prime number greater than N
-                List<HashFunction> hashFunctions = createHashFunctions(k, p, m);
-                for (HashFunction hashFunction : hashFunctions) {
+                // Calculate the size of the bit array (m)
+                double bitArraySize = -((n * Math.log(desired_fp)) / Math.pow(Math.log(2), 2));
+                int m = (int) Math.ceil(bitArraySize);
+                    
+                // Calculate the number of hash functions (k)
+                double numHashFunctions = (int) (m / n) * Math.log(2);
+                int k = (int) Math.round(numHashFunctions);
+                int p = findNextPrime(n); // prime number greater than n
+                //List<HashFunction1> hashFunctions = createHashFunctions(k, p, m);
+                List<HashFunction1> hashFunctions = new ArrayList<>();
+                for(int i = 1; i<k+1; i++){
+                    // va creando las funciones de hash con murmur
+                    hashFunctions.add(new Murmur3HashFunction(m, i));
+
+                }
+                for (HashFunction1 hashFunction : hashFunctions) {
                     System.err.println("h(x):  " + hashFunction);
                 }
                 BloomFilter bloomFilter = new BloomFilter(m, hashFunctions);

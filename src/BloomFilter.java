@@ -15,7 +15,7 @@ public class BloomFilter {
 
     private BitSet bitSet; // the bitset that tells you whether an element is present or not.
     private int m; // size of the M array.
-    private List<HashFunction> hashFunctions; // there are k hashing funcs.
+    private List<HashFunction1> hashFunctions; // there are k hashing funcs.
 
     /*
      * Constructor
@@ -26,7 +26,7 @@ public class BloomFilter {
      * 
      * @return:
      */
-    public BloomFilter(int m, List<HashFunction> hashFunctions) {
+    public BloomFilter(int m, List<HashFunction1> hashFunctions) {
         this.m = m; // set the size of the bitset
         this.bitSet = new BitSet(m); // initialize the bitset with m bits
         this.hashFunctions = hashFunctions; // initialize the hash functions
@@ -42,7 +42,7 @@ public class BloomFilter {
      */
     public void add(String element) {
         List<Integer> hashValues = new ArrayList<>();
-        for (HashFunction hashFunction : hashFunctions) {
+        for (HashFunction1 hashFunction : hashFunctions) {
             int hash = hashFunction.hash(element);
             if (hash < 0) {
                 throw new IllegalArgumentException("Hash value cannot be negative" + hash);
@@ -54,7 +54,7 @@ public class BloomFilter {
                 throw new IllegalArgumentException("Bit not set");
             }
         }
-        System.out.println(" // Element " + element + " added to the bloom filter, with indexes : " + hashValues );
+        //System.out.println(" // Element " + element + " added to the bloom filter, with indexes : " + hashValues );
     }
 
     /*
@@ -67,7 +67,7 @@ public class BloomFilter {
      */
     public boolean contains(String element) {
         List<Integer> hashValues = new ArrayList<>();
-        for (HashFunction hashFunction : hashFunctions) {
+        for (HashFunction1 hashFunction : hashFunctions) {
             int hash = hashFunction.hash(element);
             if (bitSet.get(hash)==false) {
                 return false;
