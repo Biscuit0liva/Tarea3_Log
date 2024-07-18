@@ -63,22 +63,37 @@ public class test {
         );
 
         List<Double> Ps = Arrays.asList(0.0,0.25,0.5,0.75,1.0);
+        List<String> babieStrings = utilities.readCSV(babiesCSV, ",");
 
         for (int N : Ns) {
             for (double P : Ps) {
                 int foundCount = 0;
                 int totalCount = 0;
                 System.err.println("N = " + N + ", P = " + P);
-                List<String> partitionedData = utilities.partitionCSV(babiesCSV, moviesCSV, P, N);
+                List<String> partitionedData = utilities.partitionCSV(babiesCSV, moviesCSV, P, N);  // lista de elementos que se buscaran
+
+                // Inicializar el filtro
+                double desired_fp = 0.01; // desired false positive rate
+                int n = babieStrings.size();            // numero de elementos que se agregaran al filtro
+                int m = (int) Math.ceil((n * Math.log(desired_fp)) / Math.log(1 / Math.pow(2, Math.log(2)))); // size of the bit array
+                int k = (int) (m/n * Math.log(2)); // number of hash functions
+                int p = findNextPrime(N); // prime number greater than N
+                List<HashFunction> hashFunctions = createHashFunctions(k, p, m);
+                BloomFilter bloomFilter = new BloomFilter(m, hashFunctions);
+                // se agregan los elementos al filtro
+                for (String element : babieStrings){
+                    bloomFilter.add(element);
+                }
+                
                 if (partitionedData.size() != N) {
                     System.err.println("Error: partitioned data size is not N");
                     return;
                 }
+                // Se realiza la busqueda sin filtro
+                long startTime = System.nanoTime();
                 for (String element : partitionedData) {
                     System.err.print("\rProgress: " + totalCount + "/" + N);
                     
-
-
                     Boolean found = grepSearch(element, "src/Popular-Baby-Names-Final.csv");
 
                     if (found ){
@@ -86,10 +101,32 @@ public class test {
                     }
                     totalCount++;
                 }
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime);
                 System.err.println("\n");
-                System.err.println("Elements found: " + foundCount+ "/" + N);
-                
-                
+                System.err.println("Elements found: " + foundCount+ "/" + N +" with time:" + duration/1000000 + "ms");
+
+                // Usar el filtro para buscar los elementos
+                foundCount = 0;
+                totalCount = 0;
+                int falsePositives = 0;
+                long startTimeBloom = System.nanoTime();
+                for(String element : partitionedData){
+                    System.err.print("\rProgress: " + totalCount + "/" + N);
+
+                    Boolean foundBloom = searchTest(element,true , partitionedData, bloomFilter);
+                    if (foundBloom){    // si esta en el filtro realiza la busqueda grep
+                        if(grepSearch(element, "src/Popular-Baby-Names-Final.csv")){
+                            foundCount++;
+                        } else {    // caso falso positivo, grep no encontro el elemento
+                            falsePositives++; 
+                        }
+                    }
+                    totalCount++;
+                }
+                long endTimeBloom = System.nanoTime();
+                long durationBloom = (endTimeBloom - startTimeBloom);
+                System.err.println("Elements found using Bloom filter: " + foundCount + "/" + N+ " with time:" + durationBloom/1000000 + "ms"+ "And parameters P = " + P + ", m = " + m + ", k = " + k);
             }
             
         }
@@ -156,19 +193,12 @@ public class test {
     }
     //Function to search for an element in the csv. It can be setted to use the bloom filter or not.
 
-    public static boolean searchTest(String input,Boolean useBloomFilter, List<String> DATA){
+    public static boolean searchTest(String input,Boolean useBloomFilter, List<String> DATA, BloomFilter bloomFilter){
         if (useBloomFilter){
-
+            return bloomFilter.contains(input);
             
         } else {
-            if (grepSearch(input, "src/Popular-Baby-Names-Final.csv")){
-                return true;
-            }
-            else {
-                return false;
-            }
-
+            return grepSearch(input, "src/Popular-Baby-Names-Final.csv");
         }
-        return false;
     }
 }
