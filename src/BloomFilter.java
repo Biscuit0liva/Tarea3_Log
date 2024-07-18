@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
@@ -40,13 +41,20 @@ public class BloomFilter {
      * @return:
      */
     public void add(String element) {
+        List<Integer> hashValues = new ArrayList<>();
         for (HashFunction hashFunction : hashFunctions) {
             int hash = hashFunction.hash(element);
             if (hash < 0) {
                 throw new IllegalArgumentException("Hash value cannot be negative" + hash);
             }
+            
             bitSet.set(hash);
+            hashValues.add(hash);
+            if (bitSet.get(hash) == false) {
+                throw new IllegalArgumentException("Bit not set");
+            }
         }
+        System.out.println(" // Element " + element + " added to the bloom filter, with indexes : " + hashValues );
     }
 
     /*
@@ -58,12 +66,17 @@ public class BloomFilter {
      * @return: true if the element is in the bloom filter, false otherwise
      */
     public boolean contains(String element) {
+        List<Integer> hashValues = new ArrayList<>();
         for (HashFunction hashFunction : hashFunctions) {
             int hash = hashFunction.hash(element);
-            if (!bitSet.get(hash)) {
+            if (bitSet.get(hash)==false) {
                 return false;
+            }else {
+                hashValues.add(hash);
+            
             }
         }
+        System.out.println(" // Element " + element + " is in the bloom filter, with indexes : " + hashValues );
         return true;
     }
 
