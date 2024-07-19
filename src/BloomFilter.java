@@ -76,7 +76,7 @@ public class BloomFilter {
             
             }
         }
-        
+        // System.err.println(" // Element " + element + " is in the bloom filter, with indexes : " + hashValues );
         return true;
     }
 

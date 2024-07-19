@@ -66,91 +66,97 @@ public class test {
         List<Double> Ps = Arrays.asList(0.0, 0.25, 0.5, 0.75, 1.0);
         List<String> babieStrings = utilities.readCSV(babiesCSV, ",");
         int n = babieStrings.size();            // numero de elementos que se agregaran al filtro
-        try(PrintWriter writer = new PrintWriter("src/results.txt", "UTF-8")) {
-            for (int N : Ns) {
-                for (double P : Ps) {
-                    writer.println("______________________________________");
-                    int foundCount = 0;
-                    int totalCount = 0;
-                    writer.println("N = " + N + ", P = " + P);
-                    List<String> partitionedData = utilities.partitionCSV(babiesCSV, moviesCSV, P, N);  // lista de elementos que se buscaran
-                    
-                    // Inicializar el filtro
-                    double desired_fp = 0.01; // desired false positive rate
-                    // Calculate the size of the bit array (m)
-                    double bitArraySize = -((n * Math.log(desired_fp)) / Math.pow(Math.log(2), 2));
-                    int m = (int) Math.ceil(bitArraySize);
+        double[] desired_fps = {0.0001};
+        for (double desired_fp : desired_fps){
+            String resultFileName = "src/results_" + desired_fp + ".txt";
+            try(PrintWriter writer = new PrintWriter(resultFileName, "UTF-8")) {
+                System.err.println("Results will be saved in " + resultFileName);
+                for (int N : Ns) {
+                    for (double P : Ps) {
+                        writer.println("______________________________________");
+                        System.out.println("N = " + N + ", P = " + P);
+                        int foundCount = 0;
+                        int totalCount = 0;
+                        writer.println("N = " + N + ", P = " + P);
+                        List<String> partitionedData = utilities.partitionCSV(babiesCSV, moviesCSV, P, N);  // lista de elementos que se buscaran
                         
-                    // Calculate the number of hash functions (k)
-                    double numHashFunctions = (int) (m / n) * Math.log(2);
-                    int k = (int) Math.round(numHashFunctions);
-                    int p = findNextPrime(n); // prime number greater than n
-                    //List<HashFunction1> hashFunctions = createHashFunctions(k, p, m);
-                    List<HashFunction1> hashFunctions = new ArrayList<>();
-                    for(int i = 1; i<k+1; i++){
-                        // va creando las funciones de hash con murmur
-                        hashFunctions.add(new Murmur3HashFunction(m, i));
 
-                    }
+                        // Calculate the size of the bit array (m)
+                        double bitArraySize = -((n * Math.log(desired_fp)) / Math.pow(Math.log(2), 2));
+                        int m = (int) Math.ceil(bitArraySize);
+                            
+                        // Calculate the number of hash functions (k)
+                        double numHashFunctions = (int) (m / n) * Math.log(2);
+                        int k = (int) Math.round(numHashFunctions);
+                        int p = findNextPrime(n); // prime number greater than n
+                        //List<HashFunction1> hashFunctions = createHashFunctions(k, p, m);
+                        List<HashFunction1> hashFunctions = new ArrayList<>();
+                        for(int i = 1; i<k+1; i++){
+                            // va creando las funciones de hash con murmur
+                            hashFunctions.add(new Murmur3HashFunction(m, i));
 
-                    BloomFilter bloomFilter = new BloomFilter(m, hashFunctions);
-                    // se agregan los elementos al filtro
-                    for (String element : babieStrings){
-                        bloomFilter.add(element);
-                    }
-                    
-                    if (partitionedData.size() != N) {
-                        writer.println("Error: partitioned data size is not N");
-                        return;
-                    }
-                    // Se realiza la busqueda sin filtro
-                    writer.println("Searching elements using GREP");
-                    long startTime = System.nanoTime();
-                    for (String element : partitionedData) {
-                        
-                        
-                        Boolean found = grepSearch(element, "src/Popular-Baby-Names-Final.csv");
-
-                        if (found ){
-                            foundCount++;
                         }
-                        totalCount++;
-                    }
-                    long endTime = System.nanoTime();
-                    long duration = (endTime - startTime);
 
-                    writer.println("// Elements found using GREP: " + foundCount+ "/" + N +" with time:" + duration/1000000 + "ms");
-                    writer.println("\n");
-
-                    // Usar el filtro para buscar los elementos
-                    foundCount = 0;
-                    totalCount = 0;
-                    int falsePositives = 0;
-                    long startTimeBloom = System.nanoTime();
-                    writer.println("Searching elements using BLOOM FILTER");
-                    for(String element : partitionedData){
+                        BloomFilter bloomFilter = new BloomFilter(m, hashFunctions);
+                        // se agregan los elementos al filtro
+                        for (String element : babieStrings){
+                            bloomFilter.add(element);
+                        }
                         
+                        if (partitionedData.size() != N) {
+                            writer.println("Error: partitioned data size is not N");
+                            return;
+                        }
+                        // Se realiza la busqueda sin filtro
+                        writer.println("Searching elements using GREP");
+                        long startTime = System.nanoTime();
+                        for (String element : partitionedData) {
+                            
+                            
+                            Boolean found = grepSearch(element, "src/Popular-Baby-Names-Final.csv");
 
-                        Boolean foundBloom = bloomFilter.contains(element);
-                        if (foundBloom){    // si esta en el filtro realiza la busqueda grep
-                            if(grepSearch(element, "src/Popular-Baby-Names-Final.csv")){
+                            if (found ){
                                 foundCount++;
-                            } else {    // caso falso positivo, grep no encontro el elemento
-                                falsePositives++; 
                             }
+                            totalCount++;
                         }
-                        totalCount++;
-                    }
-                    long endTimeBloom = System.nanoTime();
-                    long durationBloom = (endTimeBloom - startTimeBloom);
-                    writer.println("//Elements found using BLOOM FILTER: " + foundCount + "/" + N+ " with time:" + durationBloom/1000000 + "ms"+ "And parameters P = " + P + ", m = " + m + ", k = " + k);
-                    writer.println("False positives: " + falsePositives);
+                        long endTime = System.nanoTime();
+                        long duration = (endTime - startTime);
 
-                    
-                }   
+                        writer.println("// Elements found using GREP: " + foundCount+ "/" + N +" with time:" + duration/1000000 + "ms");
+                        writer.println("\n");
+
+                        // Usar el filtro para buscar los elementos
+                        foundCount = 0;
+                        totalCount = 0;
+                        int falsePositives = 0;
+                        long startTimeBloom = System.nanoTime();
+                        writer.println("Searching elements using BLOOM FILTER");
+                        for(String element : partitionedData){
+                            
+
+                            Boolean foundBloom = bloomFilter.contains(element);
+                            if (foundBloom){    // si esta en el filtro realiza la busqueda grep
+                                if(grepSearch(element, "src/Popular-Baby-Names-Final.csv")){
+                                    foundCount++;
+                                } else {    // caso falso positivo, grep no encontro el elemento
+                                    falsePositives++; 
+                                }
+                            }
+                            totalCount++;
+                        }
+                        long endTimeBloom = System.nanoTime();
+                        long durationBloom = (endTimeBloom - startTimeBloom);
+                        writer.println("//Elements found using BLOOM FILTER: " + foundCount + "/" + N+ " with time:" + durationBloom/1000000 + "ms"+ "And parameters P = " + P + ", m = " + m + ", k = " + k);
+                        writer.println("False positives: " + falsePositives);
+                        System.out.println("False positives: " + falsePositives);
+
+                        
+                    }   
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
    

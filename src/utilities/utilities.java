@@ -72,14 +72,18 @@ public class utilities {
         int addedCount = 0;
         while (addedCount < partitionSize2 ) {
 
-            String element = elements2.get(i);
-            result.add(element);
-            addedCount++;
-            if (i == elements2.size()-1 ) {
-                i=0;
-            }else {
+            String element = elements2.get(i%elements2.size());
+            if (elements1Set.contains(element)) {
                 i++;
+            }else {
+                result.add(element);
+                addedCount++;
+                i++;
+                
             }
+            
+            
+
         }
 
         return result;

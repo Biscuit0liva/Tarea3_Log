@@ -1,0 +1,180 @@
+______________________________________
+N = 1024, P = 0.0
+Searching elements using GREP
+// Elements found using GREP: 0/1024 with time:3367ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 0/1024 with time:288msAnd parameters P = 0.0, m = 449971, k = 3
+False positives: 96
+______________________________________
+N = 1024, P = 0.25
+Searching elements using GREP
+// Elements found using GREP: 256/1024 with time:3163ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 256/1024 with time:686msAnd parameters P = 0.25, m = 449971, k = 3
+False positives: 74
+______________________________________
+N = 1024, P = 0.5
+Searching elements using GREP
+// Elements found using GREP: 512/1024 with time:2850ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 512/1024 with time:1395msAnd parameters P = 0.5, m = 449971, k = 3
+False positives: 63
+______________________________________
+N = 1024, P = 0.75
+Searching elements using GREP
+// Elements found using GREP: 768/1024 with time:2642ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 768/1024 with time:1840msAnd parameters P = 0.75, m = 449971, k = 3
+False positives: 14
+______________________________________
+N = 1024, P = 1.0
+Searching elements using GREP
+// Elements found using GREP: 1024/1024 with time:1997ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 1024/1024 with time:1948msAnd parameters P = 1.0, m = 449971, k = 3
+False positives: 0
+______________________________________
+N = 4096, P = 0.0
+Searching elements using GREP
+// Elements found using GREP: 0/4096 with time:14859ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 0/4096 with time:1590msAnd parameters P = 0.0, m = 449971, k = 3
+False positives: 400
+______________________________________
+N = 4096, P = 0.25
+Searching elements using GREP
+// Elements found using GREP: 1024/4096 with time:12842ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 1024/4096 with time:2988msAnd parameters P = 0.25, m = 449971, k = 3
+False positives: 327
+______________________________________
+N = 4096, P = 0.5
+Searching elements using GREP
+// Elements found using GREP: 2048/4096 with time:11198ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 2048/4096 with time:4623msAnd parameters P = 0.5, m = 449971, k = 3
+False positives: 202
+______________________________________
+N = 4096, P = 0.75
+Searching elements using GREP
+// Elements found using GREP: 3072/4096 with time:10002ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 3072/4096 with time:6239msAnd parameters P = 0.75, m = 449971, k = 3
+False positives: 100
+______________________________________
+N = 4096, P = 1.0
+Searching elements using GREP
+// Elements found using GREP: 4096/4096 with time:9408ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 4096/4096 with time:9563msAnd parameters P = 1.0, m = 449971, k = 3
+False positives: 0
+______________________________________
+N = 16384, P = 0.0
+Searching elements using GREP
+// Elements found using GREP: 0/16384 with time:67017ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 0/16384 with time:6039msAnd parameters P = 0.0, m = 449971, k = 3
+False positives: 1688
+______________________________________
+N = 16384, P = 0.25
+Searching elements using GREP
+// Elements found using GREP: 4096/16384 with time:50568ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 4096/16384 with time:11579msAnd parameters P = 0.25, m = 449971, k = 3
+False positives: 1269
+______________________________________
+N = 16384, P = 0.5
+Searching elements using GREP
+// Elements found using GREP: 8192/16384 with time:42870ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 8192/16384 with time:17211msAnd parameters P = 0.5, m = 449971, k = 3
+False positives: 850
+______________________________________
+N = 16384, P = 0.75
+Searching elements using GREP
+// Elements found using GREP: 12288/16384 with time:35856ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 12288/16384 with time:23043msAnd parameters P = 0.75, m = 449971, k = 3
+False positives: 420
+______________________________________
+N = 16384, P = 1.0
+Searching elements using GREP
+// Elements found using GREP: 16384/16384 with time:28453ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 16384/16384 with time:28608msAnd parameters P = 1.0, m = 449971, k = 3
+False positives: 0
+______________________________________
+N = 65536, P = 0.0
+Searching elements using GREP
+// Elements found using GREP: 0/65536 with time:227742ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 0/65536 with time:22997msAnd parameters P = 0.0, m = 449971, k = 3
+False positives: 6736
+______________________________________
+N = 65536, P = 0.25
+Searching elements using GREP
+// Elements found using GREP: 16384/65536 with time:199467ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 16384/65536 with time:46510msAnd parameters P = 0.25, m = 449971, k = 3
+False positives: 5089
+______________________________________
+N = 65536, P = 0.5
+Searching elements using GREP
+// Elements found using GREP: 32768/65536 with time:175863ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 32768/65536 with time:78878msAnd parameters P = 0.5, m = 449971, k = 3
+False positives: 3368
+______________________________________
+N = 65536, P = 0.75
+Searching elements using GREP
+// Elements found using GREP: 49152/65536 with time:159511ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 49152/65536 with time:94717msAnd parameters P = 0.75, m = 449971, k = 3
+False positives: 1682
+______________________________________
+N = 65536, P = 1.0
+Searching elements using GREP
+// Elements found using GREP: 65536/65536 with time:117844ms
+
+
+Searching elements using BLOOM FILTER
+//Elements found using BLOOM FILTER: 65536/65536 with time:106707msAnd parameters P = 1.0, m = 449971, k = 3
+False positives: 0
