@@ -66,7 +66,7 @@ public class test {
         List<Double> Ps = Arrays.asList(0.0, 0.25, 0.5, 0.75, 1.0);
         List<String> babieStrings = utilities.readCSV(babiesCSV, ",");
         int n = babieStrings.size();            // numero de elementos que se agregaran al filtro
-        double[] desired_fps = {0.0001};
+        double[] desired_fps = {0.1,0.01,0.001,0.0001};
         for (double desired_fp : desired_fps){
             String resultFileName = "src/results_" + desired_fp + ".txt";
             try(PrintWriter writer = new PrintWriter(resultFileName, "UTF-8")) {

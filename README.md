@@ -18,12 +18,12 @@ Se utilizo Java, aprovechando la facilidad que tiene para crear clases, que repr
 ## Instrucciones de uso
 
 1. Clonar el repositorio:
-    ```sh
-    git clone https://github.com/Biscuit0liva/Tarea2_Log.git
-    cd Tarea2_log
-    ```
+   ```sh
+   git clone https://github.com/Biscuit0liva/Tarea2_Log.git
+   cd Tarea2_log
+   ```
 2. Ejecutar los test:
-    ```sh
-    javac Test.java
-    java Test
-    ```
+
+```sh
+
+```
